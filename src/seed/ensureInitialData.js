@@ -215,7 +215,9 @@ async function ensureCollections() {
 }
 
 async function ensureInitialData() {
-  await ensureLocalData();
+  if (!isSupabaseConfigured()) {
+    await ensureLocalData();
+  }
   await ensureAdminUser();
   await ensureSiteSettings();
   await ensureCollections();
