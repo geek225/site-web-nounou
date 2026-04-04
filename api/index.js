@@ -1,4 +1,4 @@
-const app = require("../src/app");
+const { app } = require("../src/app");
 const { ensureInitialData } = require("../src/seed/ensureInitialData");
 
 let seeded = false;
