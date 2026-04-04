@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Super Nounou — Formulaire</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css" />
+    <style>
+      body {
+        margin: 0;
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #ffffff, #f246b7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        background: white;
+        padding: 25px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0 10px 30px rgba(242, 70, 183, 0.3);
+      }
+
+      h2 {
+        text-align: center;
+        color: #f246b7;
+      }
+
+      .input-group {
+        margin-bottom: 15px;
+      }
+
+      .input-group input,
+      .input-group select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #ddd;
+      }
+
+      .iti {
+        width: 100%;
+      }
+
+      .choice-btn {
+        width: 100%;
+        padding: 12px;
+        margin: 6px 0;
+        border: none;
+        border-radius: 10px;
+        background: #f5f5f5;
+        cursor: pointer;
+      }
+
+      .choice-btn:hover {
+        background: #f246b7;
+        color: white;
+      }
+
+      .dynamic {
+        display: none;
+        margin-top: 10px;
+      }
+
+      .option {
+        background: #fafafa;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid #eee;
+      }
+
+      .option.active {
+        background: #ffe4f6;
+        border-color: #f246b7;
+      }
+
+      button.submit {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        background: linear-gradient(135deg, #f246b7, #ff7cd8);
+        color: white;
+        font-weight: bold;
+        margin-top: 15px;
+        cursor: pointer;
+      }
+
+      .top-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .back {
+        color: rgba(0, 0, 0, 0.6);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="top-row">
+        <a class="back" href="/">← Retour au site</a>
+        <div></div>
+      </div>
+
+      <h2>Demande de service</h2>
+
+      <div class="input-group">
+        <input id="fullName" type="text" placeholder="Nom complet" required />
+      </div>
+
+      <div class="input-group">
+        <select id="ville">
+          <option value="">Choisir une ville</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <select id="commune">
+          <option value="">Choisir une commune</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <select id="quartier">
+          <option value="">Choisir un quartier</option>
+        </select>
+      </div>
+
+      <div class="input-group">
+        <input id="email" type="email" placeholder="Email" required />
+      </div>
+
+      <div class="input-group">
+        <input id="phone" type="tel" placeholder="Numéro de téléphone" />
+      </div>
+
+      <h3>Choisir un service</h3>
+
+      <button class="choice-btn" type="button" data-service="nounou">👶 Nounou</button>
+      <button class="choice-btn" type="button" data-service="cuisiniere">🍳 Cuisinière</button>
+      <button class="choice-btn" type="button" data-service="chauffeur">🚗 Chauffeur</button>
+      <button class="choice-btn" type="button" data-service="menagere">🧹 Ménagère</button>
+
+      <div id="dynamic" class="dynamic">
+        <p id="description"></p>
+        <div id="options"></div>
+      </div>
+
+      <button class="submit" type="button" id="submitBtn">Valider</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+    <script>
+      const iti = window.intlTelInput(document.querySelector("#phone"), {
+        initialCountry: "ci",
+        preferredCountries: ["ci", "fr", "us"],
+        separateDialCode: true,
+        utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js",
+      });
+
+      const dataLocation = {
+        Abidjan: {
+          Cocody: ["Angré", "Riviera", "II Plateaux"],
+          Yopougon: ["Niangon", "Sideci", "Toits Rouges"],
+          Marcory: ["Zone 4", "Biétry"],
+          Koumassi: ["Remblais", "Sicogi"],
+        },
+        "Bouaké": {
+          Koko: ["Air France", "Commerce"],
+          Belleville: ["Zone résidentielle"],
+        },
+        Yamoussoukro: {
+          Habitat: ["220 logements"],
+          Morofé: ["Quartier résidentiel"],
+        },
+        "San-Pédro": {
+          Bardot: ["Centre"],
+          "Séwéké": ["Zone portuaire"],
+        },
+      };
+
+      const villeSelect = document.getElementById("ville");
+      const communeSelect = document.getElementById("commune");
+      const quartierSelect = document.getElementById("quartier");
+
+      for (let ville in dataLocation) {
+        let option = document.createElement("option");
+        option.value = ville;
+        option.textContent = ville;
+        villeSelect.appendChild(option);
+      }
+
+      villeSelect.addEventListener("change", function () {
+        communeSelect.innerHTML = '<option value="">Choisir une commune</option>';
+        quartierSelect.innerHTML = '<option value="">Choisir un quartier</option>';
+
+        const communes = dataLocation[this.value] || {};
+        for (let commune in communes) {
+          let option = document.createElement("option");
+          option.value = commune;
+          option.textContent = commune;
+          communeSelect.appendChild(option);
+        }
+      });
+
+      communeSelect.addEventListener("change", function () {
+        quartierSelect.innerHTML = '<option value="">Choisir un quartier</option>';
+
+        const quartiers = (dataLocation[villeSelect.value] || {})[this.value] || [];
+        quartiers.forEach((q) => {
+          let option = document.createElement("option");
+          option.value = q;
+          option.textContent = q;
+          quartierSelect.appendChild(option);
+        });
+      });
+
+      const data = {
+        nounou: {
+          desc: "Service de garde d’enfants.",
+          options: [
+            { name: "Nounou Simple", price: "40 000 CFA" },
+            { name: "Nounou Pro", price: "100 000 CFA" },
+          ],
+        },
+        cuisiniere: {
+          desc: "Service de cuisine.",
+          options: [
+            { name: "Cuisinière Simple", price: "50 000 CFA" },
+            { name: "Cuisinière Pro", price: "80 000 CFA" },
+            { name: "Chef Cuisinier", price: "150 000 CFA" },
+          ],
+        },
+        chauffeur: {
+          desc: "Service de chauffeur.",
+          options: [{ name: "1 à 2 ans" }, { name: "2 à 5 ans" }, { name: "5 ans et plus" }],
+        },
+        menagere: {
+          desc: "Service de ménage.",
+          options: [{ name: "1 à 2 ans" }, { name: "2 à 5 ans" }, { name: "5 ans et plus" }],
+        },
+      };
+
+      let selected = null;
+      let selectedServiceType = null;
+
+      function showOptions(type) {
+        const section = document.getElementById("dynamic");
+        const desc = document.getElementById("description");
+        const optionsDiv = document.getElementById("options");
+
+        section.style.display = "block";
+        desc.innerText = data[type].desc;
+        optionsDiv.innerHTML = "";
+        selected = null;
+        selectedServiceType = type;
+
+        data[type].options.forEach((item) => {
+          const div = document.createElement("div");
+          div.classList.add("option");
+          div.innerText = item.price ? `${item.name} - ${item.price}` : item.name;
+
+          div.onclick = () => {
+            document.querySelectorAll(".option").forEach((o) => o.classList.remove("active"));
+            div.classList.add("active");
+            selected = item;
+          };
+
+          optionsDiv.appendChild(div);
+        });
+      }
+
+      document.querySelectorAll("[data-service]").forEach((btn) => {
+        btn.addEventListener("click", () => showOptions(btn.getAttribute("data-service")));
+      });
+
+      document.getElementById("submitBtn").addEventListener("click", () => {
+        if (!selected) {
+          alert("Veuillez choisir une option");
+          return;
+        }
+
+        const payload = {
+          fullName: document.getElementById("fullName").value.trim(),
+          email: document.getElementById("email").value.trim(),
+          phone: iti.getNumber(),
+          ville: villeSelect.value,
+          commune: communeSelect.value,
+          quartier: quartierSelect.value,
+          serviceType: selectedServiceType || "",
+          optionName: selected.name || "",
+          optionPrice: selected.price || "",
+        };
+
+        fetch("/api/public/service-request", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        })
+          .then(async (r) => {
+            const json = await r.json().catch(() => null);
+            if (!r.ok) throw new Error(json?.error?.message || "Erreur serveur");
+            return json;
+          })
+          .then(() => {
+            alert("Demande envoyée. Merci !");
+          })
+          .catch((e) => {
+            alert(e.message || "Erreur");
+          });
+      });
+    </script>
+  </body>
+</html>

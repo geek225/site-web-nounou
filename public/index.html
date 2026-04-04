@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nounou Travel</title>
+    <meta
+      name="description"
+      content="Discover destinations tailored to your perfect journey. Premium, minimal, modern travel experiences."
+    />
+    <meta property="og:title" content="Nounou Travel" />
+    <meta
+      property="og:description"
+      content="Discover destinations tailored to your perfect journey. Premium, minimal, modern travel experiences."
+    />
+    <meta property="og:type" content="website" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="/assets/styles.css" />
+  </head>
+  <body>
+    <header class="site-header" id="top">
+      <div class="container header-inner">
+        <a class="brand" href="#accueil" aria-label="Accueil">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <img class="brand-logo" id="brandLogo" data-bind="brand.logo.url" alt="Logo" loading="lazy" />
+          <span class="brand-name" data-bind="brand.name">Logo</span>
+        </a>
+
+        <nav class="nav" id="mainNav" aria-label="Navigation principale">
+          <a class="nav-link" href="#accueil">Accueil</a>
+          <a class="nav-link" href="#apropos">À propos</a>
+          <a class="nav-link" href="#services">Nos services</a>
+          <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+
+        <div class="header-cta">
+          <a class="btn btn-primary" id="headerCtaLink" href="/formulaire.html" data-bind="headerCta.text"
+            >Formulaire</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero section" id="accueil" data-section="hero">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <div class="hero-kicker reveal">
+              <span class="dot"></span>
+              <span>Premium Travel Studio</span>
+            </div>
+            <h1 class="hero-title reveal" data-bind="hero.title">
+              Discover Destinations Tailored to Your Perfect Journey
+            </h1>
+            <p class="hero-subtitle reveal" data-bind="hero.subtitle"></p>
+
+            <div class="hero-actions reveal">
+              <a class="btn btn-primary" id="heroPrimaryCta" href="#destinations" data-bind="hero.primaryCtaText"
+                >Explore More</a
+              >
+              <button class="btn btn-ghost" type="button" id="videoBtn">
+                <span class="play" aria-hidden="true"></span>
+                <span data-bind="hero.secondaryCtaText">Regardez la vidéo</span>
+              </button>
+            </div>
+
+            <div class="hero-stats reveal" id="heroStats"></div>
+          </div>
+
+          <div class="hero-media reveal">
+            <div class="slider-shell">
+              <div class="swiper hero-swiper" id="heroSwiper" aria-label="Slider destinations">
+                <div class="swiper-wrapper" id="heroSwiperWrapper"></div>
+                <div class="hero-dots">
+                  <div class="swiper-pagination"></div>
+                </div>
+              </div>
+              <div class="swiper hero-swiper hero-swiper--round" id="heroSwiperRound" aria-label="Slider rond">
+                <div class="swiper-wrapper" id="heroSwiperWrapperRound"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="about section" id="apropos" data-section="about">
+        <div class="container split">
+          <div class="split-media reveal">
+            <div class="media-card">
+              <img id="aboutImage" alt="À propos" loading="lazy" />
+            </div>
+          </div>
+          <div class="split-copy reveal">
+            <h2 class="section-title" data-bind="about.title">À propos</h2>
+            <p class="section-text" data-bind="about.text"></p>
+            <div class="pill-row">
+              <span class="pill">Sur-mesure</span>
+              <span class="pill">Premium</span>
+              <span class="pill">Minimal</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="services section" id="services" data-section="services">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 class="section-title">Nos services</h2>
+            <p class="section-subtitle">Tout ce qu’il faut pour un voyage parfait, sans friction.</p>
+          </div>
+          <div class="card-grid" id="servicesGrid"></div>
+        </div>
+      </section>
+
+      <section class="gallery section" id="destinations" data-section="destinations">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 class="section-title" data-bind="gallery.title">Destinations</h2>
+            <p class="section-subtitle" data-bind="gallery.subtitle">
+              Une sélection premium avec un style minimal et moderne.
+            </p>
+          </div>
+
+          <div class="gallery-grid" id="galleryGrid"></div>
+        </div>
+      </section>
+
+      <section class="testimonials section" id="temoignages" data-section="testimonials">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 class="section-title">Témoignages</h2>
+            <p class="section-subtitle">Ce que nos clients disent de leur expérience.</p>
+          </div>
+
+          <div class="swiper testi-swiper reveal" id="testiSwiper" aria-label="Slider témoignages">
+            <div class="swiper-wrapper" id="testiSwiperWrapper"></div>
+            <div class="swiper-pagination"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact section" id="contact" data-section="contact">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 class="section-title">Contact</h2>
+            <p class="section-subtitle">Parlons de votre prochaine destination.</p>
+          </div>
+
+          <div class="contact-grid">
+            <form class="form card reveal" id="contactForm">
+              <div class="field">
+                <label for="name">Nom</label>
+                <input id="name" name="name" type="text" placeholder="Votre nom" required />
+              </div>
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="vous@email.com" required />
+              </div>
+              <div class="field">
+                <label for="message">Message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Votre message..." required></textarea>
+              </div>
+              <button class="btn btn-primary" type="submit">Envoyer</button>
+              <p class="form-hint" id="contactHint" aria-live="polite"></p>
+            </form>
+
+            <div class="info card reveal">
+              <h3>Infos</h3>
+              <div class="info-row">
+                <span class="info-label">Email</span>
+                <a class="info-value" href="#" id="contactEmail" data-bind="contact.email"></a>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Téléphone</span>
+                <a class="info-value" href="#" id="contactPhone" data-bind="contact.phone"></a>
+              </div>
+              <div class="info-row">
+                <span class="info-label">Adresse</span>
+                <span class="info-value" data-bind="contact.address"></span>
+              </div>
+              <div class="social-row" id="contactSocialRow"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <section class="cta section" data-section="newsletter">
+      <div class="container reveal">
+        <div class="cta-card">
+          <div>
+            <h2 class="cta-title" data-bind="newsletter.title">Newsletter</h2>
+            <p class="cta-text" data-bind="newsletter.text">Recevez nos meilleures destinations et offres premium.</p>
+          </div>
+          <form class="newsletter" id="newsletterForm">
+            <input
+              id="newsletterEmail"
+              name="email"
+              type="email"
+              placeholder="Votre email"
+              autocomplete="email"
+              required
+            />
+            <button class="btn btn-primary" type="submit" data-bind="newsletter.buttonText">S’inscrire</button>
+            <p class="form-hint" id="newsletterHint" aria-live="polite"></p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <img class="brand-logo" id="brandLogoFooter" data-bind="brand.logo.url" alt="Logo" loading="lazy" />
+          <span class="brand-name" data-bind="brand.name">Logo</span>
+        </div>
+        <div class="footer-links">
+          <a href="#accueil">Accueil</a>
+          <a href="#apropos">À propos</a>
+          <a href="#services">Services</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-social" id="footerSocial"></div>
+      </div>
+    </footer>
+
+    <div class="modal" id="videoModal" aria-hidden="true">
+      <div class="modal-backdrop" data-close="true"></div>
+      <div class="modal-card" role="dialog" aria-modal="true" aria-label="Vidéo">
+        <button class="modal-close" type="button" data-close="true" aria-label="Fermer">×</button>
+        <iframe
+          id="videoFrame"
+          title="Vidéo"
+          width="100%"
+          height="420"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="/assets/app.js"></script>
+  </body>
+</html>
