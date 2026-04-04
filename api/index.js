@@ -1,4 +1,4 @@
-const { app } = require("../src/app");
+const app = require("../src/app");
 const { ensureInitialData } = require("../src/seed/ensureInitialData");
 
 let seeded = false;
@@ -15,5 +15,6 @@ async function seedOnce() {
 
 seedOnce();
 
-module.exports = app;
+module.exports = (req, res) => app(req, res);
+module.exports.default = module.exports;
 
