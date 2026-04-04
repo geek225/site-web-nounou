@@ -49,3 +49,4 @@ app.get(/^\/admin(\/.*)?$/, (req, res) => {
 app.use(errorHandler);
 
 module.exports = app;
+module.exports.default = app;

@@ -15,5 +15,8 @@ async function seedOnce() {
 
 seedOnce();
 
-module.exports = app;
+const handler = (req, res) => app(req, res);
+
+module.exports = handler;
+module.exports.default = handler;
 
