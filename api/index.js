@@ -7,7 +7,9 @@ async function seedOnce() {
   seeded = true;
   try {
     await ensureInitialData();
-  } catch {
+  } catch (e) {
+    const msg = e?.message || e;
+    console.warn("Seed failed.", msg);
   }
 }
 
