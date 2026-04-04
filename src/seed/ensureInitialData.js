@@ -19,7 +19,27 @@ async function ensureSiteSettings() {
   if (!isSupabaseConfigured()) return;
   const supabase = getSupabaseAdmin();
   const existing = await supabase.from("site_settings").select("id").eq("id", 1).maybeSingle();
-  if (!existing.error && existing.data) return;
+  if (!existing.error && existing.data) {
+    const currentRes = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
+    if (currentRes.error) return;
+    const current = currentRes.data?.data || {};
+    const currentServices = current?.servicesSection || {};
+    const titleOk = typeof currentServices?.title === "string" && currentServices.title.trim();
+    const subtitleOk = typeof currentServices?.subtitle === "string" && currentServices.subtitle.trim();
+    if (titleOk && subtitleOk) return;
+
+    const next = {
+      ...current,
+      servicesSection: {
+        title: titleOk ? currentServices.title : "Nos services",
+        subtitle: subtitleOk ? currentServices.subtitle : "Tout ce qu’il faut pour un voyage parfait, sans friction.",
+      },
+    };
+
+    const upserted = await supabase.from("site_settings").upsert({ id: 1, data: next }, { onConflict: "id" });
+    if (upserted.error) throw upserted.error;
+    return;
+  }
 
   const settings = {
     design: {
@@ -75,6 +95,10 @@ async function ensureSiteSettings() {
         { label: "Nos services", target: "#services" },
         { label: "Contact", target: "#contact" },
       ],
+    },
+    servicesSection: {
+      title: "Nos services",
+      subtitle: "Tout ce qu’il faut pour un voyage parfait, sans friction.",
     },
     gallery: {
       title: "Destinations",

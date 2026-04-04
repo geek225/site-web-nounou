@@ -63,6 +63,10 @@ const defaultData = {
         { label: "Contact", target: "#contact" },
       ],
     },
+    servicesSection: {
+      title: "Nos services",
+      subtitle: "Tout ce qu’il faut pour un voyage parfait, sans friction.",
+    },
     gallery: {
       title: "Destinations",
       subtitle: "Une sélection premium avec un style minimal et moderne.",

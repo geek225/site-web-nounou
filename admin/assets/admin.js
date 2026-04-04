@@ -121,6 +121,7 @@ const state = {
   settings: null,
   services: [],
   otherServices: [],
+  destinations: [],
   testimonials: [],
 };
 
@@ -133,6 +134,7 @@ const sections = [
   { key: "social", label: "Réseaux" },
   { key: "services", label: "Services" },
   { key: "other-services", label: "Autres services" },
+  { key: "destinations", label: "Destinations" },
   { key: "testimonials", label: "Témoignages" },
   { key: "design", label: "Design" },
   { key: "layout", label: "Layout" },
@@ -196,16 +198,18 @@ function renderShell() {
 }
 
 async function loadAll() {
-  const [settingsRes, servicesRes, otherServicesRes, testiRes] = await Promise.all([
+  const [settingsRes, servicesRes, otherServicesRes, destinationsRes, testiRes] = await Promise.all([
     apiFetch("/api/admin/settings"),
     apiFetch("/api/admin/services"),
     apiFetch("/api/admin/other-services"),
+    apiFetch("/api/admin/destinations"),
     apiFetch("/api/admin/testimonials"),
   ]);
 
   state.settings = settingsRes.settings;
   state.services = servicesRes.items;
   state.otherServices = otherServicesRes.items;
+  state.destinations = destinationsRes.items;
   state.testimonials = testiRes.items;
 }
 
@@ -791,6 +795,14 @@ function renderContent() {
       `
       <div class="row">
         <div class="field">
+          <label>Titre Services</label>
+          <input id="srvSectionTitle" value="${escapeHtml(s?.servicesSection?.title || "")}" placeholder="Nos services" />
+        </div>
+        <div class="field full">
+          <label>Sous-titre Services</label>
+          <textarea id="srvSectionSubtitle">${escapeHtml(s?.servicesSection?.subtitle || "")}</textarea>
+        </div>
+        <div class="field">
           <label>Titre Destinations</label>
           <input id="gTitle" value="${escapeHtml(s?.gallery?.title || "")}" placeholder="Destinations" />
         </div>
@@ -828,6 +840,10 @@ function renderContent() {
     hint.textContent = "Enregistrement…";
     try {
       await saveSettings({
+        servicesSection: {
+          title: qs("#srvSectionTitle").value,
+          subtitle: qs("#srvSectionSubtitle").value,
+        },
         gallery: {
           title: qs("#gTitle").value,
           subtitle: qs("#gSubtitle").value,
@@ -1679,6 +1695,24 @@ function renderTestimonials() {
   );
 }
 
+function renderDestinations() {
+  renderCrud(
+    "destinations",
+    "Destinations",
+    state.destinations,
+    [
+      { id: "dTitle", key: "title", label: "Titre" },
+      { id: "dLocation", key: "location", label: "Lieu", full: true, placeholder: "Paris, France" },
+      { id: "dTags", key: "tags", label: "Tags (séparés par ,)", full: true, placeholder: "Luxe, Mer, City" },
+      { id: "dMediaUrl", key: "mediaUrl", label: "Image URL", full: true, placeholder: "https://..." },
+      { id: "dMedia", key: "media", label: "Image (upload)", type: "file" },
+      { id: "dEnabled", key: "enabled", label: "Activé", type: "checkbox" },
+    ],
+    "/api/admin/destinations",
+    { bulkCreate: true },
+  );
+}
+
 function renderSection() {
   const section = state.section;
   const map = {
@@ -1690,6 +1724,7 @@ function renderSection() {
     social: renderSocial,
     services: renderServices,
     "other-services": renderOtherServices,
+    destinations: renderDestinations,
     testimonials: renderTestimonials,
     design: renderDesign,
     layout: renderLayout,

@@ -121,6 +121,12 @@ adminRouter.put("/settings", async (req, res, next) => {
             items: z.array(z.object({ label: z.string(), target: z.string() })).optional(),
           })
           .optional(),
+        servicesSection: z
+          .object({
+            title: z.string().optional(),
+            subtitle: z.string().optional(),
+          })
+          .optional(),
         gallery: z
           .object({
             title: z.string().optional(),
@@ -158,6 +164,7 @@ adminRouter.put("/settings", async (req, res, next) => {
     if (body.brand) patch.brand = body.brand;
     if (body.headerCta) patch.headerCta = body.headerCta;
     if (body.navigation) patch.navigation = body.navigation;
+    if (body.servicesSection) patch.servicesSection = body.servicesSection;
     if (body.gallery) patch.gallery = body.gallery;
     if (body.newsletter) patch.newsletter = body.newsletter;
     if (body.social) patch.social = body.social;

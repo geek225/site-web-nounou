@@ -71,6 +71,32 @@ function renderNavigation(settings) {
   });
 }
 
+function renderFooterLinks(settings) {
+  const root = document.getElementById("footerLinks") || document.querySelector(".footer-links");
+  if (!root) return;
+
+  const fallback = [
+    { label: "Accueil", target: "#accueil" },
+    { label: "À propos", target: "#apropos" },
+    { label: "Nos services", target: "#services" },
+    { label: "Contact", target: "#contact" },
+  ];
+
+  const items = Array.isArray(settings?.navigation?.items) && settings.navigation.items.length ? settings.navigation.items : fallback;
+  root.innerHTML = "";
+
+  items.forEach((it) => {
+    const label = typeof it?.label === "string" ? it.label : "";
+    const target = typeof it?.target === "string" ? it.target : "";
+    if (!label || !target) return;
+
+    const a = document.createElement("a");
+    a.href = target.startsWith("#") ? target : `#${target}`;
+    a.textContent = label;
+    root.appendChild(a);
+  });
+}
+
 function applyBrand(settings) {
   const logoUrl = settings?.brand?.logo?.url;
   const logo = document.getElementById("brandLogo");
@@ -505,6 +531,7 @@ async function bootstrap() {
   applyDesign(data.settings);
   bindText(data.settings);
   renderNavigation(data.settings);
+  renderFooterLinks(data.settings);
   applyBrand(data.settings);
   renderSocialLinks(data.settings);
   applyHeroCtas(data.settings);

@@ -113,8 +113,10 @@
       <section class="services section" id="services" data-section="services">
         <div class="container">
           <div class="section-head reveal">
-            <h2 class="section-title">Nos services</h2>
-            <p class="section-subtitle">Tout ce qu’il faut pour un voyage parfait, sans friction.</p>
+            <h2 class="section-title" data-bind="servicesSection.title">Nos services</h2>
+            <p class="section-subtitle" data-bind="servicesSection.subtitle">
+              Tout ce qu’il faut pour un voyage parfait, sans friction.
+            </p>
           </div>
           <div class="card-grid" id="servicesGrid"></div>
         </div>
@@ -224,12 +226,7 @@
           <img class="brand-logo" id="brandLogoFooter" data-bind="brand.logo.url" alt="Logo" loading="lazy" />
           <span class="brand-name" data-bind="brand.name">Logo</span>
         </div>
-        <div class="footer-links">
-          <a href="#accueil">Accueil</a>
-          <a href="#apropos">À propos</a>
-          <a href="#services">Services</a>
-          <a href="#contact">Contact</a>
-        </div>
+        <div class="footer-links" id="footerLinks"></div>
         <div class="footer-social" id="footerSocial"></div>
       </div>
     </footer>
