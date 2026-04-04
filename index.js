@@ -1,6 +1,6 @@
 const http = require("node:http");
 
-const { app } = require("./src/app");
+const app = require("./src/app");
 const { env } = require("./src/config/env");
 const { ensureInitialData } = require("./src/seed/ensureInitialData");
 
