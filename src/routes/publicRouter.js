@@ -19,6 +19,7 @@ const serviceRequestLimiter = rateLimit({
 const offlineBootstrap = {
   settings: defaultData.settings,
   services: defaultData.services.map((x) => ({ ...x, _id: x.id, order: x.order_index })),
+  otherServices: (defaultData.otherServices || []).map((x) => ({ ...x, _id: x.id, order: x.order_index })),
   destinations: defaultData.destinations.map((x) => ({ ...x, _id: x.id, order: x.order_index })),
   testimonials: defaultData.testimonials.map((x) => ({ ...x, _id: x.id, order: x.order_index })),
 };

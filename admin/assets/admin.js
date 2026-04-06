@@ -121,7 +121,6 @@ const state = {
   settings: null,
   services: [],
   otherServices: [],
-  destinations: [],
   testimonials: [],
 };
 
@@ -134,7 +133,6 @@ const sections = [
   { key: "social", label: "Réseaux" },
   { key: "services", label: "Services" },
   { key: "other-services", label: "Autres services" },
-  { key: "destinations", label: "Destinations" },
   { key: "testimonials", label: "Témoignages" },
   { key: "design", label: "Design" },
   { key: "layout", label: "Layout" },
@@ -198,18 +196,16 @@ function renderShell() {
 }
 
 async function loadAll() {
-  const [settingsRes, servicesRes, otherServicesRes, destinationsRes, testiRes] = await Promise.all([
+  const [settingsRes, servicesRes, otherServicesRes, testiRes] = await Promise.all([
     apiFetch("/api/admin/settings"),
     apiFetch("/api/admin/services"),
     apiFetch("/api/admin/other-services"),
-    apiFetch("/api/admin/destinations"),
     apiFetch("/api/admin/testimonials"),
   ]);
 
   state.settings = settingsRes.settings;
   state.services = servicesRes.items;
   state.otherServices = otherServicesRes.items;
-  state.destinations = destinationsRes.items;
   state.testimonials = testiRes.items;
 }
 
@@ -352,6 +348,10 @@ function renderHero() {
       `
       <div class="row">
         <div class="field full">
+          <label>Petit titre (au-dessus du hero)</label>
+          <input id="heroKicker" value="${escapeHtml(s?.hero?.kickerText || "")}" placeholder="Premium Travel Studio" />
+        </div>
+        <div class="field full">
           <label>Titre</label>
           <textarea id="heroTitle">${escapeHtml(s?.hero?.title || "")}</textarea>
         </div>
@@ -468,6 +468,7 @@ function renderHero() {
     try {
       await saveSettings({
         hero: {
+          kickerText: qs("#heroKicker").value,
           title: qs("#heroTitle").value,
           subtitle: qs("#heroSubtitle").value,
           primaryCtaText: qs("#heroPrimary").value,
@@ -803,11 +804,11 @@ function renderContent() {
           <textarea id="srvSectionSubtitle">${escapeHtml(s?.servicesSection?.subtitle || "")}</textarea>
         </div>
         <div class="field">
-          <label>Titre Destinations</label>
-          <input id="gTitle" value="${escapeHtml(s?.gallery?.title || "")}" placeholder="Destinations" />
+          <label>Titre Autres services</label>
+          <input id="gTitle" value="${escapeHtml(s?.gallery?.title || "")}" placeholder="Autres services" />
         </div>
         <div class="field full">
-          <label>Sous-titre Destinations</label>
+          <label>Sous-titre Autres services</label>
           <textarea id="gSubtitle">${escapeHtml(s?.gallery?.subtitle || "")}</textarea>
         </div>
         <div class="field">
@@ -1695,24 +1696,6 @@ function renderTestimonials() {
   );
 }
 
-function renderDestinations() {
-  renderCrud(
-    "destinations",
-    "Destinations",
-    state.destinations,
-    [
-      { id: "dTitle", key: "title", label: "Titre" },
-      { id: "dLocation", key: "location", label: "Lieu", full: true, placeholder: "Paris, France" },
-      { id: "dTags", key: "tags", label: "Tags (séparés par ,)", full: true, placeholder: "Luxe, Mer, City" },
-      { id: "dMediaUrl", key: "mediaUrl", label: "Image URL", full: true, placeholder: "https://..." },
-      { id: "dMedia", key: "media", label: "Image (upload)", type: "file" },
-      { id: "dEnabled", key: "enabled", label: "Activé", type: "checkbox" },
-    ],
-    "/api/admin/destinations",
-    { bulkCreate: true },
-  );
-}
-
 function renderSection() {
   const section = state.section;
   const map = {
@@ -1724,7 +1707,6 @@ function renderSection() {
     social: renderSocial,
     services: renderServices,
     "other-services": renderOtherServices,
-    destinations: renderDestinations,
     testimonials: renderTestimonials,
     design: renderDesign,
     layout: renderLayout,

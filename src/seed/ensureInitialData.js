@@ -23,16 +23,35 @@ async function ensureSiteSettings() {
     const currentRes = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
     if (currentRes.error) return;
     const current = currentRes.data?.data || {};
+    const currentBrand = current?.brand || {};
+    const currentHero = current?.hero || {};
+    const currentGallery = current?.gallery || {};
     const currentServices = current?.servicesSection || {};
     const titleOk = typeof currentServices?.title === "string" && currentServices.title.trim();
     const subtitleOk = typeof currentServices?.subtitle === "string" && currentServices.subtitle.trim();
-    if (titleOk && subtitleOk) return;
+    const brandOk = typeof currentBrand?.name === "string" && currentBrand.name.trim() && currentBrand.name.trim().toLowerCase() !== "logo";
+    const heroKickerOk = typeof currentHero?.kickerText === "string" && currentHero.kickerText.trim();
+    const galleryOk = typeof currentGallery?.title === "string" && currentGallery.title.trim() && currentGallery.title.trim().toLowerCase() !== "destinations";
+
+    if (titleOk && subtitleOk && brandOk && heroKickerOk && galleryOk) return;
 
     const next = {
       ...current,
+      brand: {
+        ...(currentBrand || {}),
+        name: brandOk ? currentBrand.name : "Super nounou",
+      },
+      hero: {
+        ...(currentHero || {}),
+        kickerText: heroKickerOk ? currentHero.kickerText : "Premium Travel Studio",
+      },
       servicesSection: {
         title: titleOk ? currentServices.title : "Nos services",
         subtitle: subtitleOk ? currentServices.subtitle : "Tout ce qu’il faut pour un voyage parfait, sans friction.",
+      },
+      gallery: {
+        ...(currentGallery || {}),
+        title: galleryOk ? currentGallery.title : "Autres services",
       },
     };
 
@@ -50,6 +69,7 @@ async function ensureSiteSettings() {
       fontFamily: "Poppins",
     },
     hero: {
+      kickerText: "Premium Travel Studio",
       title: "Discover Destinations Tailored to Your Perfect Journey",
       subtitle:
         "Let's embark on a global journey, immersing ourselves in diverse cultures and creating unforgettable memories as we travel the world!",
@@ -86,7 +106,7 @@ async function ensureSiteSettings() {
       buttonText: "Formulaire",
     },
     contact: { email: "contact@example.com", phone: "+33 6 00 00 00 00", address: "Paris, France" },
-    brand: { name: "Logo", logo: null },
+    brand: { name: "Super nounou", logo: null },
     headerCta: { text: "Formulaire", href: "/formulaire.html" },
     navigation: {
       items: [
@@ -101,7 +121,7 @@ async function ensureSiteSettings() {
       subtitle: "Tout ce qu’il faut pour un voyage parfait, sans friction.",
     },
     gallery: {
-      title: "Destinations",
+      title: "Autres services",
       subtitle: "Une sélection premium avec un style minimal et moderne.",
     },
     newsletter: {

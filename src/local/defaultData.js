@@ -8,6 +8,7 @@ const defaultData = {
       fontFamily: "Poppins",
     },
     hero: {
+      kickerText: "Premium Travel Studio",
       title: "Discover Destinations Tailored to Your Perfect Journey",
       subtitle:
         "Let's embark on a global journey, immersing ourselves in diverse cultures and creating unforgettable memories as we travel the world!",
@@ -50,7 +51,7 @@ const defaultData = {
       phone: "+33 6 00 00 00 00",
       address: "Paris, France",
     },
-    brand: { name: "Logo", logo: null },
+    brand: { name: "Super nounou", logo: null },
     headerCta: {
       text: "Formulaire",
       href: "/formulaire.html",
@@ -68,7 +69,7 @@ const defaultData = {
       subtitle: "Tout ce qu’il faut pour un voyage parfait, sans friction.",
     },
     gallery: {
-      title: "Destinations",
+      title: "Autres services",
       subtitle: "Une sélection premium avec un style minimal et moderne.",
     },
     newsletter: {

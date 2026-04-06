@@ -17,6 +17,13 @@ function applyDesign(settings) {
   setCssVar("--font", design.fontFamily);
 }
 
+function applySiteTitle(settings) {
+  const title = typeof settings?.brand?.name === "string" && settings.brand.name.trim() ? settings.brand.name.trim() : "";
+  if (title) document.title = title;
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle && title) ogTitle.setAttribute("content", title);
+}
+
 function bindText(data) {
   document.querySelectorAll("[data-bind]").forEach((el) => {
     const key = el.getAttribute("data-bind");
@@ -290,7 +297,7 @@ function renderGallery(destinations) {
     title.textContent = d.title || "";
     const loc = document.createElement("p");
     loc.className = "gallery-loc";
-    loc.textContent = d.location || "";
+    loc.textContent = d.location || d.description || "";
     left.appendChild(title);
     left.appendChild(loc);
 
@@ -529,6 +536,7 @@ async function bootstrap() {
   const data = await res.json();
 
   applyDesign(data.settings);
+  applySiteTitle(data.settings);
   bindText(data.settings);
   renderNavigation(data.settings);
   renderFooterLinks(data.settings);
@@ -553,7 +561,7 @@ async function bootstrap() {
   if (aboutImage && aboutImgUrl) aboutImage.src = aboutImgUrl;
 
   renderServices(data.services);
-  renderGallery(data.destinations);
+  renderGallery(data.otherServices);
   renderTestimonials(data.testimonials);
 
   initVideoModal(data?.settings?.hero?.videoUrl || "");
