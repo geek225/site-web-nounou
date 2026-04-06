@@ -40,6 +40,9 @@ const publicDir = path.join(process.cwd(), "public");
 const adminDir = path.join(process.cwd(), "admin");
 
 app.use(express.static(publicDir, { extensions: ["html"] }));
+app.get("/admin", (req, res) => {
+  res.sendFile(path.join(adminDir, "index.html"));
+});
 app.use("/admin", express.static(adminDir, { extensions: ["html"] }));
 
 app.get(/^\/admin(\/.*)?$/, (req, res) => {
