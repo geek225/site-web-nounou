@@ -123,19 +123,7 @@
 
       <div class="input-group">
         <select id="ville">
-          <option value="">Choisir une ville</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <select id="commune">
-          <option value="">Choisir une commune</option>
-        </select>
-      </div>
-
-      <div class="input-group">
-        <select id="quartier">
-          <option value="">Choisir un quartier</option>
+          <option value="">Choisir une ville / commune</option>
         </select>
       </div>
 
@@ -171,61 +159,105 @@
         utilsScript: "https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/utils.js",
       });
 
-      const dataLocation = {
-        Abidjan: {
-          Cocody: ["Angré", "Riviera", "II Plateaux"],
-          Yopougon: ["Niangon", "Sideci", "Toits Rouges"],
-          Marcory: ["Zone 4", "Biétry"],
-          Koumassi: ["Remblais", "Sicogi"],
-        },
-        "Bouaké": {
-          Koko: ["Air France", "Commerce"],
-          Belleville: ["Zone résidentielle"],
-        },
-        Yamoussoukro: {
-          Habitat: ["220 logements"],
-          Morofé: ["Quartier résidentiel"],
-        },
-        "San-Pédro": {
-          Bardot: ["Centre"],
-          "Séwéké": ["Zone portuaire"],
-        },
-      };
+      const communesCIV = [
+        "Abengourou",
+        "Aboisso",
+        "Adiaké",
+        "Adjamé",
+        "Adzopé",
+        "Affery",
+        "Agboville",
+        "Agnibilékrou",
+        "Agou",
+        "Akoupé",
+        "Alépé",
+        "Anyama",
+        "Arrah",
+        "Assinie-Mafia",
+        "Attécoubé",
+        "Ayamé",
+        "Azaguié",
+        "Bako",
+        "Bangolo",
+        "Bassam",
+        "Béoumi",
+        "Biankouma",
+        "Bingerville",
+        "Bloléquin",
+        "Bocanda",
+        "Bondoukou",
+        "Bongouanou",
+        "Bonon",
+        "Borotou",
+        "Bouaflé",
+        "Bouaké",
+        "Bouna",
+        "Boundiali",
+        "Dabakala",
+        "Dabou",
+        "Daloa",
+        "Danané",
+        "Daoukro",
+        "Dimbokro",
+        "Divo",
+        "Duékoué",
+        "Ferkessédougou",
+        "Fresco",
+        "Gagnoa",
+        "Grand-Bassam",
+        "Grand-Lahou",
+        "Guiglo",
+        "Issia",
+        "Jacqueville",
+        "Katiola",
+        "Korhogo",
+        "Koumassi",
+        "Lakota",
+        "Man",
+        "Mankono",
+        "Marcory",
+        "Minignan",
+        "Odienné",
+        "Plateau",
+        "Port-Bouët",
+        "San-Pédro",
+        "Sassandra",
+        "Séguéla",
+        "Sinfra",
+        "Soubré",
+        "Tabou",
+        "Tengréla",
+        "Tiassalé",
+        "Touba",
+        "Toumodi",
+        "Treichville",
+        "Vavoua",
+        "Yamoussoukro",
+        "Yopougon",
+        "Zuénoula",
+        "Abobo",
+        "Cocody",
+        "Songon",
+        "Brofodoumé",
+      ];
 
       const villeSelect = document.getElementById("ville");
-      const communeSelect = document.getElementById("commune");
-      const quartierSelect = document.getElementById("quartier");
-
-      for (let ville in dataLocation) {
-        let option = document.createElement("option");
-        option.value = ville;
-        option.textContent = ville;
-        villeSelect.appendChild(option);
-      }
-
-      villeSelect.addEventListener("change", function () {
-        communeSelect.innerHTML = '<option value="">Choisir une commune</option>';
-        quartierSelect.innerHTML = '<option value="">Choisir un quartier</option>';
-
-        const communes = dataLocation[this.value] || {};
-        for (let commune in communes) {
-          let option = document.createElement("option");
-          option.value = commune;
-          option.textContent = commune;
-          communeSelect.appendChild(option);
-        }
-      });
-
-      communeSelect.addEventListener("change", function () {
-        quartierSelect.innerHTML = '<option value="">Choisir un quartier</option>';
-
-        const quartiers = (dataLocation[villeSelect.value] || {})[this.value] || [];
-        quartiers.forEach((q) => {
-          let option = document.createElement("option");
-          option.value = q;
-          option.textContent = q;
-          quartierSelect.appendChild(option);
+      const seen = new Set();
+      const items = communesCIV
+        .map((x) => String(x || "").trim())
+        .filter((x) => {
+          if (!x) return false;
+          const k = x.toLowerCase();
+          if (seen.has(k)) return false;
+          seen.add(k);
+          return true;
         });
+
+      items.forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        villeSelect.appendChild(option);
       });
 
       const data = {
@@ -293,13 +325,18 @@
           return;
         }
 
+        if (!villeSelect.value) {
+          alert("Veuillez choisir une ville / commune");
+          return;
+        }
+
         const payload = {
           fullName: document.getElementById("fullName").value.trim(),
           email: document.getElementById("email").value.trim(),
           phone: iti.getNumber(),
           ville: villeSelect.value,
-          commune: communeSelect.value,
-          quartier: quartierSelect.value,
+          commune: "",
+          quartier: "",
           serviceType: selectedServiceType || "",
           optionName: selected.name || "",
           optionPrice: selected.price || "",
