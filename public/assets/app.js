@@ -24,6 +24,97 @@ function applySiteTitle(settings) {
   if (ogTitle && title) ogTitle.setAttribute("content", title);
 }
 
+function normalizePhoneForWa(phone) {
+  if (typeof phone !== "string") return "";
+  const trimmed = phone.trim();
+  if (!trimmed) return "";
+  const digits = trimmed.replace(/[^\d+]/g, "");
+  return digits.startsWith("+") ? digits.slice(1) : digits;
+}
+
+function buildWhatsAppUrl(phone, message) {
+  const waPhone = normalizePhoneForWa(phone);
+  if (!waPhone) return "";
+  const text = typeof message === "string" ? message : "";
+  const qs = text.trim() ? `?text=${encodeURIComponent(text)}` : "";
+  return `https://wa.me/${waPhone}${qs}`;
+}
+
+function renderWhatsAppWidget(settings) {
+  const root = document.getElementById("waWidget");
+  if (!root) return;
+
+  const w = settings?.whatsappWidget || {};
+  const enabled = typeof w.enabled === "boolean" ? w.enabled : false;
+  const phone = typeof w.phone === "string" && w.phone.trim() ? w.phone.trim() : settings?.contact?.phone || "";
+  const url = buildWhatsAppUrl(phone, w.message);
+
+  if (!enabled || !url) {
+    root.innerHTML = "";
+    root.removeAttribute("data-enabled");
+    root.removeAttribute("data-open");
+    root.setAttribute("aria-hidden", "true");
+    return;
+  }
+
+  const theme = typeof w.themeColor === "string" && w.themeColor.trim() ? w.themeColor.trim() : "#ff4da6";
+  root.style.setProperty("--wa", theme);
+  root.setAttribute("data-enabled", "true");
+  root.setAttribute("aria-hidden", "false");
+
+  const title = typeof w.title === "string" && w.title.trim() ? w.title.trim() : "Contactez le service client";
+  const text = typeof w.text === "string" && w.text.trim() ? w.text.trim() : "Besoin d’aide ? Écris-nous sur WhatsApp.";
+  const btnText = typeof w.buttonText === "string" && w.buttonText.trim() ? w.buttonText.trim() : "WhatsApp";
+
+  root.innerHTML = `
+    <div class="wa-panel" role="dialog" aria-label="WhatsApp">
+      <div class="wa-title">${escapeHtml(title)}</div>
+      <div class="wa-text">${escapeHtml(text)}</div>
+      <div class="wa-actions">
+        <a class="wa-btn" href="${escapeAttr(url)}" target="_blank" rel="noopener noreferrer">
+          ${waIconSvg()}
+          <span>${escapeHtml(btnText)}</span>
+        </a>
+        <button class="wa-close" type="button" aria-label="Fermer">✕</button>
+      </div>
+    </div>
+    <button class="wa-fab" type="button" aria-label="WhatsApp">
+      ${waIconSvg()}
+    </button>
+  `;
+
+  function setOpen(v) {
+    if (v) root.setAttribute("data-open", "true");
+    else root.removeAttribute("data-open");
+  }
+
+  setOpen(false);
+
+  const fab = root.querySelector(".wa-fab");
+  const closeBtn = root.querySelector(".wa-close");
+  const panel = root.querySelector(".wa-panel");
+  const link = root.querySelector(".wa-btn");
+
+  fab.addEventListener("click", () => {
+    const isOpen = root.getAttribute("data-open") === "true";
+    setOpen(!isOpen);
+  });
+  closeBtn.addEventListener("click", () => setOpen(false));
+  link.addEventListener("click", () => setOpen(false));
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") setOpen(false);
+  });
+  document.addEventListener("click", (e) => {
+    if (root.getAttribute("data-open") !== "true") return;
+    const target = e.target;
+    if (!target) return;
+    if (target === fab) return;
+    if (panel && panel.contains(target)) return;
+    if (root.contains(target)) return;
+    setOpen(false);
+  });
+}
+
 function bindText(data) {
   document.querySelectorAll("[data-bind]").forEach((el) => {
     const key = el.getAttribute("data-bind");
@@ -130,6 +221,42 @@ function applyHeroCtas(settings) {
   if (primaryEl && typeof primaryHref === "string" && primaryHref.trim()) {
     primaryEl.href = primaryHref.trim();
   }
+}
+
+function escapeAttr(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;");
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function waIconSvg() {
+  return `
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <path
+        d="M16 4.2c-6.48 0-11.74 5.04-11.74 11.26 0 2.03.57 3.92 1.55 5.56L4.2 27.8l7.05-1.83a12.3 12.3 0 0 0 4.75.95c6.48 0 11.74-5.04 11.74-11.26C27.74 9.24 22.48 4.2 16 4.2Z"
+        fill="rgba(255,255,255,0.22)"
+      />
+      <path
+        d="M16 6.2c-5.36 0-9.74 4.1-9.74 9.26 0 1.82.52 3.5 1.42 4.93l.36.57-.92 3.75 3.92-1.02.55.32c1.38.82 3.02 1.29 4.41 1.29 5.36 0 9.74-4.1 9.74-9.26S21.36 6.2 16 6.2Z"
+        fill="currentColor"
+      />
+      <path
+        d="M20.47 18.54c-.2-.1-1.2-.57-1.39-.64-.19-.07-.33-.1-.47.1-.14.2-.54.64-.66.77-.12.14-.24.16-.44.06-.2-.1-.85-.3-1.62-.95-.6-.5-1-1.12-1.12-1.32-.12-.2-.01-.31.09-.4.09-.09.2-.23.3-.34.1-.12.14-.2.21-.34.07-.14.03-.26-.02-.36-.05-.1-.47-1.08-.64-1.48-.17-.4-.34-.33-.47-.33h-.4c-.14 0-.36.05-.55.26-.19.2-.72.66-.72 1.6 0 .94.7 1.85.8 1.98.1.12 1.38 2.17 3.37 3.02.47.2.83.32 1.12.4.47.13.9.11 1.24.07.38-.05 1.2-.47 1.37-.92.17-.44.17-.82.12-.9-.05-.08-.19-.13-.39-.23Z"
+        fill="#fff"
+      />
+    </svg>
+  `;
 }
 
 function applyHeaderCta(settings) {
@@ -545,6 +672,7 @@ async function bootstrap() {
   renderSocialLinks(data.settings);
   applyHeroCtas(data.settings);
   applyHeaderCta(data.settings);
+  renderWhatsAppWidget(data.settings);
   const heroTitleEl = document.querySelector('[data-bind="hero.title"]');
   if (heroTitleEl && heroTitleEl.textContent.includes("Destinations")) {
     heroTitleEl.innerHTML = escapeTitle(heroTitleEl.textContent);

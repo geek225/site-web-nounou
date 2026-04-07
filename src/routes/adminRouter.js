@@ -105,6 +105,17 @@ adminRouter.put("/settings", async (req, res, next) => {
             address: z.string().optional(),
           })
           .optional(),
+        whatsappWidget: z
+          .object({
+            enabled: z.boolean().optional(),
+            phone: z.string().optional(),
+            title: z.string().optional(),
+            text: z.string().optional(),
+            buttonText: z.string().optional(),
+            message: z.string().optional(),
+            themeColor: z.string().optional(),
+          })
+          .optional(),
         brand: z
           .object({
             name: z.string().optional(),
@@ -162,6 +173,7 @@ adminRouter.put("/settings", async (req, res, next) => {
     if (body.about) patch.about = body.about;
     if (body.cta) patch.cta = body.cta;
     if (body.contact) patch.contact = body.contact;
+    if (body.whatsappWidget) patch.whatsappWidget = body.whatsappWidget;
     if (body.brand) patch.brand = body.brand;
     if (body.headerCta) patch.headerCta = body.headerCta;
     if (body.navigation) patch.navigation = body.navigation;

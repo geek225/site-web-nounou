@@ -51,6 +51,15 @@ const defaultData = {
       phone: "+33 6 00 00 00 00",
       address: "Paris, France",
     },
+    whatsappWidget: {
+      enabled: true,
+      phone: "",
+      title: "Contactez le service client",
+      text: "Besoin d’aide ? Écris-nous sur WhatsApp.",
+      buttonText: "WhatsApp",
+      message: "Bonjour, j’ai besoin d’aide.",
+      themeColor: "#ff4da6",
+    },
     brand: { name: "Super nounou", logo: null },
     headerCta: {
       text: "Formulaire",

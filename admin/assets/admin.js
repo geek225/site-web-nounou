@@ -137,6 +137,7 @@ const sections = [
   { key: "design", label: "Design" },
   { key: "layout", label: "Layout" },
   { key: "contact", label: "Contact" },
+  { key: "whatsapp", label: "WhatsApp" },
   { key: "media", label: "Médias" },
 ];
 
@@ -1138,6 +1139,96 @@ function renderContact() {
   });
 }
 
+function renderWhatsApp() {
+  setTitle("WhatsApp");
+  const p = page();
+  const s = state.settings || {};
+  const w = s?.whatsappWidget || {};
+  p.innerHTML = "";
+
+  const enabled = typeof w.enabled === "boolean" ? w.enabled : true;
+  const theme = typeof w.themeColor === "string" && w.themeColor.trim() ? w.themeColor : "#ff4da6";
+
+  p.appendChild(
+    card(
+      "Bulle WhatsApp",
+      `
+      <div class="row">
+        <div class="field full">
+          <label class="toggle"><input id="waEnabled" type="checkbox" ${enabled ? "checked" : ""} /> Activer la bulle</label>
+        </div>
+        <div class="field full">
+          <label>Numéro WhatsApp (format international)</label>
+          <input id="waPhone" value="${escapeHtml(w.phone || "")}" placeholder="+2250102030405" />
+        </div>
+        <div class="field full">
+          <label>Titre</label>
+          <input id="waTitle" value="${escapeHtml(w.title || "")}" placeholder="Contactez le service client" />
+        </div>
+        <div class="field full">
+          <label>Texte</label>
+          <textarea id="waText">${escapeHtml(w.text || "")}</textarea>
+        </div>
+        <div class="field full">
+          <label>Message pré-rempli</label>
+          <textarea id="waMessage">${escapeHtml(w.message || "")}</textarea>
+        </div>
+        <div class="field">
+          <label>Texte bouton</label>
+          <input id="waBtnText" value="${escapeHtml(w.buttonText || "")}" placeholder="WhatsApp" />
+        </div>
+        <div class="field">
+          <label>Couleur (rose)</label>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <input id="waColorPicker" type="color" value="${escapeHtml(theme)}" style="width:48px; height:42px; padding:0; border-radius:12px;" />
+            <input id="waColor" value="${escapeHtml(theme)}" placeholder="#ff4da6" />
+          </div>
+        </div>
+        <div class="field full">
+          <button class="btn btn-primary" type="button" id="saveWa">Enregistrer</button>
+          <p class="hint" id="waHint"></p>
+        </div>
+      </div>
+    `,
+    ),
+  );
+
+  function isHexColor(value) {
+    return /^#([0-9a-fA-F]{6})$/.test(value);
+  }
+
+  const picker = qs("#waColorPicker");
+  const text = qs("#waColor");
+  picker.addEventListener("input", () => {
+    text.value = picker.value;
+  });
+  text.addEventListener("input", () => {
+    const v = text.value.trim();
+    if (isHexColor(v)) picker.value = v;
+  });
+
+  qs("#saveWa").addEventListener("click", async () => {
+    const hint = qs("#waHint");
+    hint.textContent = "Enregistrement…";
+    try {
+      await saveSettings({
+        whatsappWidget: {
+          enabled: qs("#waEnabled").checked,
+          phone: qs("#waPhone").value,
+          title: qs("#waTitle").value,
+          text: qs("#waText").value,
+          message: qs("#waMessage").value,
+          buttonText: qs("#waBtnText").value,
+          themeColor: qs("#waColor").value,
+        },
+      });
+      hint.textContent = "Enregistré.";
+    } catch (e) {
+      hint.textContent = e.message || "Erreur";
+    }
+  });
+}
+
 function renderDesign() {
   setTitle("Design");
   const p = page();
@@ -1711,6 +1802,7 @@ function renderSection() {
     design: renderDesign,
     layout: renderLayout,
     contact: renderContact,
+    whatsapp: renderWhatsApp,
     media: renderMedia,
   };
   const fn = map[section] || renderOverview;

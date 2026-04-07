@@ -27,13 +27,21 @@ async function ensureSiteSettings() {
     const currentHero = current?.hero || {};
     const currentGallery = current?.gallery || {};
     const currentServices = current?.servicesSection || {};
+    const currentWhats = current?.whatsappWidget || {};
     const titleOk = typeof currentServices?.title === "string" && currentServices.title.trim();
     const subtitleOk = typeof currentServices?.subtitle === "string" && currentServices.subtitle.trim();
     const brandOk = typeof currentBrand?.name === "string" && currentBrand.name.trim() && currentBrand.name.trim().toLowerCase() !== "logo";
     const heroKickerOk = typeof currentHero?.kickerText === "string" && currentHero.kickerText.trim();
     const galleryOk = typeof currentGallery?.title === "string" && currentGallery.title.trim() && currentGallery.title.trim().toLowerCase() !== "destinations";
+    const whatsOk =
+      typeof currentWhats?.enabled === "boolean" &&
+      typeof currentWhats?.title === "string" &&
+      typeof currentWhats?.text === "string" &&
+      typeof currentWhats?.buttonText === "string" &&
+      typeof currentWhats?.message === "string" &&
+      typeof currentWhats?.themeColor === "string";
 
-    if (titleOk && subtitleOk && brandOk && heroKickerOk && galleryOk) return;
+    if (titleOk && subtitleOk && brandOk && heroKickerOk && galleryOk && whatsOk) return;
 
     const next = {
       ...current,
@@ -52,6 +60,15 @@ async function ensureSiteSettings() {
       gallery: {
         ...(currentGallery || {}),
         title: galleryOk ? currentGallery.title : "Autres services",
+      },
+      whatsappWidget: {
+        enabled: typeof currentWhats?.enabled === "boolean" ? currentWhats.enabled : true,
+        phone: typeof currentWhats?.phone === "string" ? currentWhats.phone : "",
+        title: typeof currentWhats?.title === "string" && currentWhats.title.trim() ? currentWhats.title : "Contactez le service client",
+        text: typeof currentWhats?.text === "string" && currentWhats.text.trim() ? currentWhats.text : "Besoin d’aide ? Écris-nous sur WhatsApp.",
+        buttonText: typeof currentWhats?.buttonText === "string" && currentWhats.buttonText.trim() ? currentWhats.buttonText : "WhatsApp",
+        message: typeof currentWhats?.message === "string" ? currentWhats.message : "Bonjour, j’ai besoin d’aide.",
+        themeColor: typeof currentWhats?.themeColor === "string" && currentWhats.themeColor.trim() ? currentWhats.themeColor : "#ff4da6",
       },
     };
 
@@ -106,6 +123,15 @@ async function ensureSiteSettings() {
       buttonText: "Formulaire",
     },
     contact: { email: "contact@example.com", phone: "+33 6 00 00 00 00", address: "Paris, France" },
+    whatsappWidget: {
+      enabled: true,
+      phone: "",
+      title: "Contactez le service client",
+      text: "Besoin d’aide ? Écris-nous sur WhatsApp.",
+      buttonText: "WhatsApp",
+      message: "Bonjour, j’ai besoin d’aide.",
+      themeColor: "#ff4da6",
+    },
     brand: { name: "Super nounou", logo: null },
     headerCta: { text: "Formulaire", href: "/formulaire.html" },
     navigation: {
