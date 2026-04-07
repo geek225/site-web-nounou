@@ -26,7 +26,9 @@ const offlineBootstrap = {
 
 publicRouter.get("/bootstrap", async (req, res, next) => {
   try {
-    res.set("Cache-Control", "no-store");
+    res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+    res.set("Pragma", "no-cache");
+    res.set("Expires", "0");
     if (!isSupabaseConfigured()) {
       const local = await getBootstrap();
       return res.json({

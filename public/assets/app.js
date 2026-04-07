@@ -532,7 +532,8 @@ function initNewsletterForm(settings) {
 }
 
 async function bootstrap() {
-  const res = await fetch("/api/public/bootstrap");
+  const url = `/api/public/bootstrap?t=${Date.now()}`;
+  const res = await fetch(url, { cache: "no-store" });
   const data = await res.json();
 
   applyDesign(data.settings);
