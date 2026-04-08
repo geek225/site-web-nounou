@@ -161,7 +161,7 @@ adminRouter.put("/settings", async (req, res, next) => {
         layout: z
           .object({
             sectionOrder: z.array(z.string()).optional(),
-            sectionEnabled: z.record(z.boolean()).optional(),
+            sectionEnabled: z.record(z.string(), z.boolean()).optional(),
           })
           .optional(),
       })
