@@ -166,6 +166,7 @@ function renderShell() {
             <div class="muted">Les changements sont appliqués sur le site via l’API.</div>
           </div>
           <button class="btn btn-primary" id="refreshBtn" type="button">Rafraîchir</button>
+          <button class="btn btn-primary" id="saveAllBtn" type="button" style="background: linear-gradient(135deg, #4caf50, #2e7d32); margin-left: 8px;">Sauvegarder tout</button>
         </div>
         <div class="grid" id="page"></div>
       </main>
@@ -193,6 +194,23 @@ function renderShell() {
     await loadAll();
     renderShell();
     renderSection();
+  });
+
+  qs("#saveAllBtn").addEventListener("click", async () => {
+    const btn = qs("#saveAllBtn");
+    const oldText = btn.textContent;
+    btn.textContent = "Sauvegarde...";
+    btn.disabled = true;
+    try {
+      // On sauvegarde l'état actuel des réglages
+      await saveSettings(state.settings);
+      alert("Toutes les données de configuration ont été sauvegardées avec succès.");
+    } catch (e) {
+      alert("Erreur lors de la sauvegarde : " + e.message);
+    } finally {
+      btn.textContent = oldText;
+      btn.disabled = false;
+    }
   });
 }
 

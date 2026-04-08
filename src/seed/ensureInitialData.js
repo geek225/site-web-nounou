@@ -19,61 +19,11 @@ async function ensureSiteSettings() {
   if (!isSupabaseConfigured()) return;
   const supabase = getSupabaseAdmin();
   const existing = await supabase.from("site_settings").select("id").eq("id", 1).maybeSingle();
+  
+  // Si des réglages existent déjà (id=1), on n'écrase rien du tout en production.
+  // On laisse l'utilisateur gérer via le dashboard.
   if (!existing.error && existing.data) {
-    const currentRes = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
-    if (currentRes.error) return;
-    const current = currentRes.data?.data || {};
-    const currentBrand = current?.brand || {};
-    const currentHero = current?.hero || {};
-    const currentGallery = current?.gallery || {};
-    const currentServices = current?.servicesSection || {};
-    const currentWhats = current?.whatsappWidget || {};
-    const titleOk = typeof currentServices?.title === "string" && currentServices.title.trim();
-    const subtitleOk = typeof currentServices?.subtitle === "string" && currentServices.subtitle.trim();
-    const brandOk = typeof currentBrand?.name === "string" && currentBrand.name.trim() && currentBrand.name.trim().toLowerCase() !== "logo";
-    const heroKickerOk = typeof currentHero?.kickerText === "string" && currentHero.kickerText.trim();
-    const galleryOk = typeof currentGallery?.title === "string" && currentGallery.title.trim() && currentGallery.title.trim().toLowerCase() !== "destinations";
-    const whatsOk =
-      typeof currentWhats?.enabled === "boolean" &&
-      typeof currentWhats?.title === "string" &&
-      typeof currentWhats?.text === "string" &&
-      typeof currentWhats?.buttonText === "string" &&
-      typeof currentWhats?.message === "string" &&
-      typeof currentWhats?.themeColor === "string";
-
-    if (titleOk && subtitleOk && brandOk && heroKickerOk && galleryOk && whatsOk) return;
-
-    const next = {
-      ...current,
-      brand: {
-        ...(currentBrand || {}),
-        name: brandOk ? currentBrand.name : "Super nounou",
-      },
-      hero: {
-        ...(currentHero || {}),
-        kickerText: heroKickerOk ? currentHero.kickerText : "Premium Travel Studio",
-      },
-      servicesSection: {
-        title: titleOk ? currentServices.title : "Nos services",
-        subtitle: subtitleOk ? currentServices.subtitle : "Tout ce qu’il faut pour un voyage parfait, sans friction.",
-      },
-      gallery: {
-        ...(currentGallery || {}),
-        title: galleryOk ? currentGallery.title : "Autres services",
-      },
-      whatsappWidget: {
-        enabled: typeof currentWhats?.enabled === "boolean" ? currentWhats.enabled : true,
-        phone: typeof currentWhats?.phone === "string" ? currentWhats.phone : "",
-        title: typeof currentWhats?.title === "string" && currentWhats.title.trim() ? currentWhats.title : "Contactez le service client",
-        text: typeof currentWhats?.text === "string" && currentWhats.text.trim() ? currentWhats.text : "Besoin d’aide ? Écris-nous sur WhatsApp.",
-        buttonText: typeof currentWhats?.buttonText === "string" && currentWhats.buttonText.trim() ? currentWhats.buttonText : "WhatsApp",
-        message: typeof currentWhats?.message === "string" ? currentWhats.message : "Bonjour, j’ai besoin d’aide.",
-        themeColor: typeof currentWhats?.themeColor === "string" && currentWhats.themeColor.trim() ? currentWhats.themeColor : "#ff4da6",
-      },
-    };
-
-    const upserted = await supabase.from("site_settings").upsert({ id: 1, data: next }, { onConflict: "id" });
-    if (upserted.error) throw upserted.error;
+    console.log("Site settings already exist in Supabase. Skipping seed.");
     return;
   }
 
