@@ -202,8 +202,41 @@ function renderShell() {
     btn.textContent = "Sauvegarde...";
     btn.disabled = true;
     try {
-      // On sauvegarde l'état actuel des réglages
-      await saveSettings(state.settings);
+      const s = state.settings || {};
+      function normalizeEnabled(raw) {
+        if (!raw) return {};
+        const obj = typeof raw.get === "function" ? Object.fromEntries(raw) : raw;
+        const out = {};
+        Object.keys(obj).forEach((k) => {
+          const v = obj[k];
+          if (v === true || v === false) out[k] = v;
+          else if (typeof v === "string") out[k] = v.toLowerCase() === "true" || v === "1" || v === "on";
+          else out[k] = Boolean(v);
+        });
+        return out;
+      }
+      const patch = {
+        design: s.design || undefined,
+        hero: s.hero || undefined,
+        about: s.about || undefined,
+        cta: s.cta || undefined,
+        contact: s.contact || undefined,
+        whatsappWidget: s.whatsappWidget || undefined,
+        brand: s.brand || undefined,
+        headerCta: s.headerCta || undefined,
+        navigation: s.navigation || undefined,
+        servicesSection: s.servicesSection || undefined,
+        gallery: s.gallery || undefined,
+        newsletter: s.newsletter || undefined,
+        social: s.social || undefined,
+        layout: s.layout
+          ? {
+              sectionOrder: Array.isArray(s.layout.sectionOrder) ? s.layout.sectionOrder : [],
+              sectionEnabled: normalizeEnabled(s.layout.sectionEnabled),
+            }
+          : undefined,
+      };
+      await saveSettings(patch);
       alert("Toutes les données de configuration ont été sauvegardées avec succès.");
     } catch (e) {
       alert("Erreur lors de la sauvegarde : " + e.message);
