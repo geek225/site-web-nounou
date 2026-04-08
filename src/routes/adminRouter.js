@@ -88,7 +88,7 @@ adminRouter.put("/settings", async (req, res, next) => {
           .object({
             title: z.string().optional(),
             text: z.string().optional(),
-            image: z.object({ url: z.string().optional(), publicId: z.string().optional() }).optional(),
+            image: z.object({ url: z.string().optional(), publicId: z.string().optional() }).optional().nullable(),
           })
           .optional(),
         cta: z
@@ -119,7 +119,7 @@ adminRouter.put("/settings", async (req, res, next) => {
         brand: z
           .object({
             name: z.string().optional(),
-            logo: z.object({ url: z.string().optional(), publicId: z.string().optional() }).optional(),
+            logo: z.object({ url: z.string().optional(), publicId: z.string().optional() }).optional().nullable(),
           })
           .optional(),
         headerCta: z
