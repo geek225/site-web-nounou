@@ -43,7 +43,10 @@ publicRouter.get("/bootstrap", async (req, res, next) => {
     const supabase = getSupabaseAdmin();
 
     const settingsRes = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
-    if (settingsRes.error) return res.json(offlineBootstrap);
+    if (settingsRes.error) {
+      console.error("PublicRouter: Error fetching site_settings:", settingsRes.error);
+      return res.json(offlineBootstrap);
+    }
     const settings = settingsRes.data?.data || offlineBootstrap.settings;
 
     const servicesRes = await supabase
@@ -51,28 +54,40 @@ publicRouter.get("/bootstrap", async (req, res, next) => {
       .select("*")
       .eq("enabled", true)
       .order("order_index", { ascending: true });
-    if (servicesRes.error) return res.json(offlineBootstrap);
+    if (servicesRes.error) {
+      console.error("PublicRouter: Error fetching services:", servicesRes.error);
+      return res.json(offlineBootstrap);
+    }
 
     const otherServicesRes = await supabase
       .from("other_services")
       .select("*")
       .eq("enabled", true)
       .order("order_index", { ascending: true });
-    if (otherServicesRes.error) return res.json(offlineBootstrap);
+    if (otherServicesRes.error) {
+      console.error("PublicRouter: Error fetching other_services:", otherServicesRes.error);
+      return res.json(offlineBootstrap);
+    }
 
     const destinationsRes = await supabase
       .from("destinations")
       .select("*")
       .eq("enabled", true)
       .order("order_index", { ascending: true });
-    if (destinationsRes.error) return res.json(offlineBootstrap);
+    if (destinationsRes.error) {
+      console.error("PublicRouter: Error fetching destinations:", destinationsRes.error);
+      return res.json(offlineBootstrap);
+    }
 
     const testimonialsRes = await supabase
       .from("testimonials")
       .select("*")
       .eq("enabled", true)
       .order("order_index", { ascending: true });
-    if (testimonialsRes.error) return res.json(offlineBootstrap);
+    if (testimonialsRes.error) {
+      console.error("PublicRouter: Error fetching testimonials:", testimonialsRes.error);
+      return res.json(offlineBootstrap);
+    }
 
     res.json({
       settings,

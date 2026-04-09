@@ -190,7 +190,10 @@ adminRouter.put("/settings", async (req, res, next) => {
 
     const supabase = getSupabaseAdmin();
     const currentRes = await supabase.from("site_settings").select("data").eq("id", 1).maybeSingle();
-    if (currentRes.error) throw currentRes.error;
+    if (currentRes.error) {
+      console.error("AdminRouter: Error fetching site_settings for PUT:", currentRes.error);
+      throw new Error("Impossible de récupérer les paramètres actuels avant la mise à jour.");
+    }
     const current = currentRes.data?.data || {};
 
     const nextSettings = deepMerge(current, patch);

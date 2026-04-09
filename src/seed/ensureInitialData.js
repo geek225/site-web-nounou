@@ -20,9 +20,14 @@ async function ensureSiteSettings() {
   const supabase = getSupabaseAdmin();
   const existing = await supabase.from("site_settings").select("id").eq("id", 1).maybeSingle();
   
+  if (existing.error) {
+    console.error("Error fetching site_settings during seed:", existing.error);
+    throw existing.error;
+  }
+
   // Si des réglages existent déjà (id=1), on n'écrase rien du tout en production.
   // On laisse l'utilisateur gérer via le dashboard.
-  if (!existing.error && existing.data) {
+  if (existing.data) {
     console.log("Site settings already exist in Supabase. Skipping seed.");
     return;
   }
